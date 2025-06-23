@@ -6,6 +6,7 @@ import useScreenWidth from "@/Hooks/useScreenWidth";
 import { Slider, Box, Typography } from "@mui/material";
 import GigCard from "@/app/components/GigCard";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const allLanguages = [
   "Any",
@@ -217,6 +218,9 @@ function GigList() {
 
   const width = useScreenWidth();
 
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+
   useEffect(() => {
     // Check if user has a theme preference in localStorage
     const savedTheme = localStorage.getItem("theme");
@@ -264,11 +268,12 @@ function GigList() {
   const filtered = dummyFreelancers
     .filter(
       (f) =>
-        (duration === 7 || f.duration <= duration) && // Show all profiles when duration is 7, otherwise filter
+        (duration === 7 || f.duration <= duration) &&
         f.price >= price.min &&
         f.price <= price.max &&
         (language === "Any" || f.languages.includes(language)) &&
-        (location === "Any" || f.location === location)
+        (location === "Any" || f.location === location) &&
+        (f.title.toLowerCase().includes(searchQuery) || f.name.toLowerCase().includes(searchQuery))
     )
     .sort((a, b) => {
       switch (sortBy) {
@@ -282,7 +287,7 @@ function GigList() {
           return b.duration - a.duration;
         case "recent":
         default:
-          return 0; // Maintain original order for recent or if no sort is applied
+          return 0;
       }
     });
 
