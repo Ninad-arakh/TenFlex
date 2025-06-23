@@ -1,0 +1,14 @@
+# dependencies
+node_modules
+
+# build output
+.next
+
+# environment variables
+.env
+
+# system files
+.DS_Store
+
+# log files
+npm-debug.log*
